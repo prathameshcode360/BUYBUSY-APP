@@ -10,6 +10,7 @@ function HomePage() {
     maxPrice,
     handleMaxPrice,
     handleCategory,
+    addToCart,
   } = useProductContextValue();
   console.log(filteredProducts);
   return (
@@ -64,7 +65,7 @@ function HomePage() {
             <img src={product.image} alt={product.name} />
             <h3>{product.name}</h3>
             <span>{product.price}</span>
-            <button>Add To Cart</button>
+            <button onClick={() => addToCart(product)}>Add To Cart</button>
           </div>
         ))}
       </div>
