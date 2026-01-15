@@ -1,8 +1,14 @@
 import { useProductContextValue } from "../../Context/ProductContext";
 import styles from "./Cart.module.css";
 function Cart() {
-  const { cart, removeFromCart, decreaseCartCount, addToCart, total } =
-    useProductContextValue();
+  const {
+    cart,
+    removeFromCart,
+    decreaseCartCount,
+    addToCart,
+    total,
+    handlePurchase,
+  } = useProductContextValue();
   console.log(cart);
   return (
     <>
@@ -33,7 +39,7 @@ function Cart() {
       </div>
       <div className={styles.totalCartPrice}>
         <span>Total:{total}</span>
-        <button>Purches</button>
+        <button onClick={handlePurchase}>Purches</button>
       </div>
     </>
   );

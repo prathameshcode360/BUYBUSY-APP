@@ -1,0 +1,50 @@
+.ordersContainer {
+  padding: 30px 50px;
+}
+
+.ordersContainer h2 {
+  margin-bottom: 20px;
+}
+
+.ordersTable {
+  margin-bottom: 30px;
+}
+
+.ordersTable span {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* Table styling */
+.ordersTable table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ordersTable th,
+.ordersTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.ordersTable thead {
+  background-color: #f5f5f5;
+}
+
+.ordersTable th {
+  font-weight: bold;
+}
+
+.ordersTable tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.ordersTable tfoot {
+  background-color: #f0f0f0;
+}
+
+.ordersTable tfoot td {
+  font-weight: bold;
+}

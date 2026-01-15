@@ -19,14 +19,15 @@ function Navbar() {
               <span>Home</span>
             </div>
           </Link>
-          <div className={styles.navIconOrders}>
-            <img
-              src="https://cdn-icons-png.flaticon.com/128/17241/17241740.png"
-              alt="order-icon"
-            />
-            <span>Orders</span>
-          </div>
-
+          <Link to="orders">
+            <div className={styles.navIconOrders}>
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/17241/17241740.png"
+                alt="order-icon"
+              />
+              <span>Orders</span>
+            </div>
+          </Link>
           <Link to="cart">
             {" "}
             <div className={styles.navIconCart}>

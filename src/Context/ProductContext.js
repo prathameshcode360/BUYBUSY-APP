@@ -16,6 +16,7 @@ function ProductCustomProvider({ children }) {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
+  const [orders, setOrders] = useState([]);
 
   const filteredProducts = products.filter((product) => {
     const matchSearch = product.name.toLowerCase().includes(text.toLowerCase());
@@ -86,6 +87,21 @@ function ProductCustomProvider({ children }) {
     setTotal((prev) => prev - item.price * item.qty);
   }
 
+  function handlePurchase() {
+    if (cart.length === 0) return;
+
+    const newOrder = {
+      id: Date.now(),
+      date: new Date().toLocaleDateString(),
+      items: cart,
+      total: total,
+    };
+
+    setOrders((prev) => [...prev, newOrder]);
+    setCart([]);
+    setTotal(0);
+  }
+
   return (
     <>
       <productContext.Provider
@@ -101,6 +117,8 @@ function ProductCustomProvider({ children }) {
           removeFromCart,
           decreaseCartCount,
           total,
+          handlePurchase,
+          orders,
         }}>
         {children}
       </productContext.Provider>
