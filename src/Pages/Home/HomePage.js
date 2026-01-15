@@ -11,10 +11,16 @@ function HomePage() {
     handleMaxPrice,
     handleCategory,
     addToCart,
+    message,
   } = useProductContextValue();
   console.log(filteredProducts);
   return (
     <>
+      {message && (
+        <div className="message-container">
+          <span>{message}</span>
+        </div>
+      )}
       <div className={styles.searchBar}>
         <input
           type="text"

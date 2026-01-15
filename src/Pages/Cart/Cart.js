@@ -8,10 +8,16 @@ function Cart() {
     addToCart,
     total,
     handlePurchase,
+    message,
   } = useProductContextValue();
   console.log(cart);
   return (
     <>
+      {message && (
+        <div className="message-container">
+          <span>{message}</span>
+        </div>
+      )}
       <div className={styles.cartCotainer}>
         {cart.map((item) => (
           <div className={styles.cartItem}>
