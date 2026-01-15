@@ -1,0 +1,56 @@
+.navbar {
+  height: 60px;
+  padding: 0 30px;
+  background-color: #e08686;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rightNav h3 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+/* Left section */
+.leftNav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+/* Common icon style (future-proof) */
+.navIconHome,
+.navIconOrders,
+.navIconCart,
+.navIconSignIn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.navIconHome img,
+.navIconOrders img,
+.navIconCart img,
+.navIconSignIn img {
+  width: 22px;
+  height: 22px;
+}
+
+.navIconHome span,
+.navIconOrders span,
+.navIconCart span,
+.navIconSignIn span {
+  font-size: 14px;
+}
+
+/* Hover effect (optional but clean) */
+.navIconHome:hover,
+.navIconOrders:hover,
+.navIconCart:hover,
+.navIconSignIn:hover {
+  opacity: 0.8;
+}

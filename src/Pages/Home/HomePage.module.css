@@ -1,0 +1,70 @@
+.searchBar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.searchBar input {
+  width: 60%;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.filter {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 40px;
+  margin-bottom: 20px;
+}
+
+.priceFilter {
+  display: flex;
+  align-items: center;
+}
+
+.categoryFilter {
+  display: flex;
+  gap: 15px;
+}
+
+.categoryFilter label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.productsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px 40px;
+}
+
+.productCard {
+  border: 1px solid #ddd;
+  padding: 15px;
+  text-align: center;
+}
+
+.productCard img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.productCard h3 {
+  margin: 10px 0;
+}
+
+.productCard span {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.productCard button {
+  padding: 8px 12px;
+  cursor: pointer;
+}
