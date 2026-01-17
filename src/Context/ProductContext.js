@@ -1,4 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import {
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  addDoc,
+  onSnapshot,
+} from "firebase/firestore";
+import { db } from "../Firebase/FirebaseInit";
+import { useAuthContext } from "./AuthContext";
 import products from "../Data/data";
 
 const productContext = createContext();
@@ -10,27 +21,25 @@ export function useProductContextValue() {
 
 /* ================= PROVIDER ================= */
 function ProductCustomProvider({ children }) {
+  const { user } = useAuthContext();
+
   /* ---------- FILTER STATES ---------- */
   const [maxPrice, setMaxPrice] = useState(5000);
   const [text, setText] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  /* ---------- CART STATES ---------- */
+  /* ---------- CART & ORDER STATES ---------- */
   const [cart, setCart] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [total, setTotal] = useState(0);
 
-  /* ---------- ORDER STATES ---------- */
-  const [orders, setOrders] = useState([]);
-
-  /* ---------- UI STATE ---------- */
+  /* ---------- UI MESSAGE ---------- */
   const [message, setMessage] = useState("");
 
   /* ---------- FILTER LOGIC ---------- */
   const filteredProducts = products.filter((product) => {
     const matchSearch = product.name.toLowerCase().includes(text.toLowerCase());
-
     const matchPrice = product.price <= maxPrice;
-
     const matchCategory =
       selectedCategories.length === 0 ||
       selectedCategories.includes(product.category);
@@ -38,12 +47,62 @@ function ProductCustomProvider({ children }) {
     return matchSearch && matchPrice && matchCategory;
   });
 
-  /* ---------- MESSAGE AUTO CLEAR ---------- */
+  /* ---------- AUTO CLEAR MESSAGE ---------- */
   useEffect(() => {
     if (!message) return;
     const timer = setTimeout(() => setMessage(""), 2000);
     return () => clearTimeout(timer);
   }, [message]);
+
+  /* ---------- REAL-TIME CART LISTENER ---------- */
+  useEffect(() => {
+    if (!user) {
+      setCart([]);
+      setTotal(0);
+      return;
+    }
+
+    const cartRef = collection(db, "users", user.uid, "cart");
+
+    const unsubscribe = onSnapshot(cartRef, (snapshot) => {
+      const cartItems = [];
+      let totalPrice = 0;
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        cartItems.push(data);
+        totalPrice += data.price * data.qty;
+      });
+
+      setCart(cartItems);
+      setTotal(totalPrice);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
+  /* ---------- REAL-TIME ORDERS LISTENER ---------- */
+  useEffect(() => {
+    if (!user) {
+      setOrders([]);
+      return;
+    }
+
+    const ordersRef = collection(db, "users", user.uid, "orders");
+
+    const unsubscribe = onSnapshot(ordersRef, (snapshot) => {
+      const ordersData = [];
+      snapshot.forEach((doc) => {
+        ordersData.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+      setOrders(ordersData);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   /* ---------- FILTER HANDLERS ---------- */
   function handleSearch(text) {
@@ -58,73 +117,96 @@ function ProductCustomProvider({ children }) {
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
-        : [...prev, category]
+        : [...prev, category],
     );
   }
 
-  /* ---------- CART HANDLERS ---------- */
-  function addToCart(product) {
-    let messageText = "";
+  /* ---------- CART HANDLERS (WRITE ONLY) ---------- */
+  async function addToCart(product) {
+    if (!user) return;
 
-    setCart((prev) => {
-      const index = prev.findIndex((p) => p.id === product.id);
+    const productRef = doc(
+      db,
+      "users",
+      user.uid,
+      "cart",
+      product.id.toString(),
+    );
 
-      if (index !== -1) {
-        messageText = "Product count increased";
-        return prev.map((item, i) =>
-          i === index ? { ...item, qty: item.qty + 1 } : item
-        );
-      }
+    const existing = cart.find((p) => p.id === product.id);
 
-      messageText = "Product added to cart successfully";
-      return [...prev, { ...product, qty: 1 }];
-    });
-
-    setTotal((prev) => prev + product.price);
-    setMessage(messageText);
+    if (existing) {
+      await updateDoc(productRef, {
+        qty: existing.qty + 1,
+      });
+      setMessage("Product count increased");
+    } else {
+      await setDoc(productRef, {
+        ...product,
+        qty: 1,
+      });
+      setMessage("Product added to cart");
+    }
   }
 
-  function decreaseCartCount(product) {
-    setCart((prev) => {
-      const index = prev.findIndex((p) => p.id === product.id);
-      if (index === -1) return prev;
+  async function decreaseCartCount(product) {
+    if (!user) return;
 
-      const item = prev[index];
+    const productRef = doc(
+      db,
+      "users",
+      user.uid,
+      "cart",
+      product.id.toString(),
+    );
 
-      if (item.qty > 1) {
-        return prev.map((p, i) => (i === index ? { ...p, qty: p.qty - 1 } : p));
-      }
+    const existing = cart.find((p) => p.id === product.id);
+    if (!existing) return;
 
-      return prev.filter((p) => p.id !== product.id);
-    });
-
-    setTotal((prev) => prev - product.price);
+    if (existing.qty > 1) {
+      await updateDoc(productRef, {
+        qty: existing.qty - 1,
+      });
+    } else {
+      await deleteDoc(productRef);
+    }
   }
 
-  function removeFromCart(product) {
-    const item = cart.find((p) => p.id === product.id);
-    if (!item) return;
+  async function removeFromCart(product) {
+    if (!user) return;
 
-    setCart((prev) => prev.filter((p) => p.id !== product.id));
-    setTotal((prev) => prev - item.price * item.qty);
-    setMessage("Product removed from cart successfully");
+    const productRef = doc(
+      db,
+      "users",
+      user.uid,
+      "cart",
+      product.id.toString(),
+    );
+
+    await deleteDoc(productRef);
+    setMessage("Product removed from cart");
   }
 
-  /* ---------- ORDER HANDLER ---------- */
-  function handlePurchase() {
-    if (cart.length === 0) return;
+  /* ---------- PURCHASE ---------- */
+  async function handlePurchase() {
+    if (!user || cart.length === 0) return;
 
-    const newOrder = {
-      id: Date.now(),
+    const ordersRef = collection(db, "users", user.uid, "orders");
+
+    await addDoc(ordersRef, {
       date: new Date().toLocaleDateString(),
       items: cart,
-      total: total,
-    };
+      total,
+    });
 
-    setOrders((prev) => [...prev, newOrder]);
-    setCart([]);
-    setTotal(0);
-    setMessage("Order successful");
+    // clear cart
+    const cartRef = collection(db, "users", user.uid, "cart");
+    cart.forEach(async (item) => {
+      const ref = doc(cartRef, item.id.toString());
+      await deleteDoc(ref);
+    });
+
+    setMessage("Order placed successfully");
   }
 
   /* ---------- CONTEXT VALUE ---------- */
