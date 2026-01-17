@@ -1,5 +1,4 @@
 import { useProductContextValue } from "../../Context/ProductContext";
-
 import styles from "./HomePage.module.css";
 
 function HomePage() {
@@ -13,7 +12,6 @@ function HomePage() {
     addToCart,
     message,
   } = useProductContextValue();
-  console.log(filteredProducts);
   return (
     <>
       {message && (
@@ -21,6 +19,7 @@ function HomePage() {
           <span>{message}</span>
         </div>
       )}
+
       <div className={styles.searchBar}>
         <input
           type="text"
@@ -53,14 +52,14 @@ function HomePage() {
             <input
               type="checkbox"
               onChange={() => handleCategory("Accessories")}
-            />{" "}
+            />
             Accessories
           </label>
           <label>
             <input
               type="checkbox"
               onChange={() => handleCategory("Wearables")}
-            />{" "}
+            />
             Wearables
           </label>
         </div>

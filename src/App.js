@@ -1,9 +1,14 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Navbar from "./Components/Navbar/Navbar";
 import ProductCustomProvider from "./Context/ProductContext";
+import AuthProvider from "./Context/AuthContext";
+
 import HomePage from "./Pages/Home/HomePage";
 import Cart from "./Pages/Cart/Cart";
 import Orders from "./Pages/Orders/Orders";
+import Login from "./Pages/Login/Login";
+import Signup from "./Pages/Signup/Signup";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   const router = createBrowserRouter([
@@ -12,16 +17,37 @@ function App() {
       element: <Navbar />,
       children: [
         { index: true, element: <HomePage /> },
-        { path: "cart", element: <Cart /> },
-        { path: "orders", element: <Orders /> },
+        { path: "login", element: <Login /> },
+        { path: "signup", element: <Signup /> },
+
+        {
+          path: "cart",
+          element: (
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "orders",
+          element: (
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          ),
+        },
       ],
     },
   ]);
 
   return (
-    <ProductCustomProvider>
-      <RouterProvider router={router} />
-    </ProductCustomProvider>
+    <AuthProvider>
+      {/* ✅ outer */}
+      <ProductCustomProvider>
+        {/* ✅ inner */}
+        <RouterProvider router={router} />
+      </ProductCustomProvider>
+    </AuthProvider>
   );
 }
 

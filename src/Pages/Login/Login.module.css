@@ -1,0 +1,37 @@
+.loginContainer {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginContainer h2 {
+  margin-bottom: 20px;
+}
+
+.loginForm {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.loginForm input {
+  padding: 10px;
+  font-size: 14px;
+}
+
+.loginForm button {
+  padding: 10px;
+  font-size: 15px;
+}
+p {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+p a {
+  color: #1e1e1e;
+  font-weight: bold;
+}
