@@ -9,12 +9,14 @@ import Orders from "./Pages/Orders/Orders";
 import Login from "./Pages/Login/Login";
 import Signup from "./Pages/Signup/Signup";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import ErrorPage from "./Components/ErrorPage";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
       element: <Navbar />,
+      errorElement: <ErrorPage />,
       children: [
         { index: true, element: <HomePage /> },
         { path: "login", element: <Login /> },

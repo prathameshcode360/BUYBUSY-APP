@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../Context/AuthContext";
 import { useProductContextValue } from "../../Context/ProductContext";
 import styles from "./HomePage.module.css";
 
@@ -12,6 +14,18 @@ function HomePage() {
     addToCart,
     message,
   } = useProductContextValue();
+
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+
+  function handleAdd(product) {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    addToCart(product);
+  }
+
   return (
     <>
       {message && (
@@ -37,7 +51,7 @@ function HomePage() {
               <img src={product.image} alt={product.name} />
               <h3>{product.name}</h3>
               <span>{product.price}</span>
-              <button onClick={() => addToCart(product)}>Add To Cart</button>
+              <button onClick={() => handleAdd(product)}>Add To Cart</button>
             </div>
           ))}
         </div>

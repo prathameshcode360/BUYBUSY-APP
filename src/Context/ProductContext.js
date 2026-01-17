@@ -123,7 +123,9 @@ function ProductCustomProvider({ children }) {
 
   //  CART HANDLERS (WRITE ONLY)
   async function addToCart(product) {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     const productRef = doc(
       db,
