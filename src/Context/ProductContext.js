@@ -14,29 +14,29 @@ import products from "../Data/data";
 
 const productContext = createContext();
 
-/* ================= CUSTOM HOOK ================= */
+//  CUSTOM HOOK
 export function useProductContextValue() {
   return useContext(productContext);
 }
 
-/* ================= PROVIDER ================= */
+//  PROVIDER
 function ProductCustomProvider({ children }) {
   const { user } = useAuthContext();
 
-  /* ---------- FILTER STATES ---------- */
+  //  FILTER STATES
   const [maxPrice, setMaxPrice] = useState(5000);
   const [text, setText] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  /* ---------- CART & ORDER STATES ---------- */
+  //  CART & ORDER STATES
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
   const [total, setTotal] = useState(0);
 
-  /* ---------- UI MESSAGE ---------- */
+  // UI MESSAGE
   const [message, setMessage] = useState("");
 
-  /* ---------- FILTER LOGIC ---------- */
+  //  FILTER LOGIC
   const filteredProducts = products.filter((product) => {
     const matchSearch = product.name.toLowerCase().includes(text.toLowerCase());
     const matchPrice = product.price <= maxPrice;
@@ -47,14 +47,14 @@ function ProductCustomProvider({ children }) {
     return matchSearch && matchPrice && matchCategory;
   });
 
-  /* ---------- AUTO CLEAR MESSAGE ---------- */
+  //  AUTO CLEAR MESSAGE
   useEffect(() => {
     if (!message) return;
     const timer = setTimeout(() => setMessage(""), 2000);
     return () => clearTimeout(timer);
   }, [message]);
 
-  /* ---------- REAL-TIME CART LISTENER ---------- */
+  //  REAL-TIME CART LISTENER
   useEffect(() => {
     if (!user) {
       setCart([]);
@@ -81,7 +81,7 @@ function ProductCustomProvider({ children }) {
     return () => unsubscribe();
   }, [user]);
 
-  /* ---------- REAL-TIME ORDERS LISTENER ---------- */
+  //  REAL-TIME ORDERS LISTENER
   useEffect(() => {
     if (!user) {
       setOrders([]);
@@ -104,7 +104,7 @@ function ProductCustomProvider({ children }) {
     return () => unsubscribe();
   }, [user]);
 
-  /* ---------- FILTER HANDLERS ---------- */
+  //  FILTER HANDLERS
   function handleSearch(text) {
     setText(text);
   }
@@ -121,7 +121,7 @@ function ProductCustomProvider({ children }) {
     );
   }
 
-  /* ---------- CART HANDLERS (WRITE ONLY) ---------- */
+  //  CART HANDLERS (WRITE ONLY)
   async function addToCart(product) {
     if (!user) return;
 
@@ -187,7 +187,7 @@ function ProductCustomProvider({ children }) {
     setMessage("Product removed from cart");
   }
 
-  /* ---------- PURCHASE ---------- */
+  //  PURCHASE
   async function handlePurchase() {
     if (!user || cart.length === 0) return;
 
@@ -209,7 +209,7 @@ function ProductCustomProvider({ children }) {
     setMessage("Order placed successfully");
   }
 
-  /* ---------- CONTEXT VALUE ---------- */
+  //  CONTEXT VALUE
   return (
     <productContext.Provider
       value={{

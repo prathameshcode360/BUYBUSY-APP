@@ -42,9 +42,7 @@ function App() {
 
   return (
     <AuthProvider>
-      {/* ✅ outer */}
       <ProductCustomProvider>
-        {/* ✅ inner */}
         <RouterProvider router={router} />
       </ProductCustomProvider>
     </AuthProvider>

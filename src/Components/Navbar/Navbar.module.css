@@ -1,35 +1,55 @@
+/* ================= NAVBAR ================= */
 .navbar {
-  height: 60px;
-  padding: 0 30px;
-  background-color: #e08686;
-  color: white;
+  width: 100%;
+  height: 70px;
+  background-color: var(--bg-card);
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  padding: 0 28px;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
+/* ================= LEFT & RIGHT ================= */
 .rightNav h3 {
-  margin: 0;
   font-size: 20px;
+  font-weight: 700;
   letter-spacing: 1px;
+  color: var(--primary);
 }
 
-/* Left section */
 .leftNav {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 24px;
 }
 
-/* Common icon style (future-proof) */
+/* ================= NAV ITEM ================= */
+.leftNav a {
+  text-decoration: none;
+}
+
 .navIconHome,
 .navIconOrders,
 .navIconCart,
 .navIconSignIn {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.navIconHome:hover,
+.navIconOrders:hover,
+.navIconCart:hover,
+.navIconSignIn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .navIconHome img,
@@ -45,12 +65,23 @@
 .navIconCart span,
 .navIconSignIn span {
   font-size: 14px;
+  font-weight: 500;
+  color: var(--primary);
 }
 
-/* Hover effect (optional but clean) */
-.navIconHome:hover,
-.navIconOrders:hover,
-.navIconCart:hover,
-.navIconSignIn:hover {
-  opacity: 0.8;
+.navIconHome:active,
+.navIconOrders:active,
+.navIconCart:active,
+.navIconSignIn:active {
+  transform: scale(0.96);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .leftNav span {
+    display: none; 
+  }
 }

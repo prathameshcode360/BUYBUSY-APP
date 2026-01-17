@@ -10,22 +10,22 @@ import { auth } from "../Firebase/FirebaseInit";
 
 const AuthContext = createContext();
 
-/* ===== Custom Hook ===== */
+//  Custom Hook
 export function useAuthContext() {
   return useContext(AuthContext);
 }
 
-/* ===== Provider ===== */
+//  Provider
 function AuthProvider({ children }) {
-  /* ---------- AUTH STATES ---------- */
+  //  AUTH STATES
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* ---------- MESSAGE STATE ---------- */
+  //  MESSAGE STATE
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState(""); // "success" | "error"
+  const [messageType, setMessageType] = useState("");
 
-  /* ---------- AUTH STATE LISTENER ---------- */
+  //  AUTH STATE LISTENER
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -35,7 +35,7 @@ function AuthProvider({ children }) {
     return () => unsubscribe();
   }, []);
 
-  /* ---------- MESSAGE AUTO CLEAR ---------- */
+  //  MESSAGE AUTO CLEAR
   useEffect(() => {
     if (!message) return;
     const timer = setTimeout(() => {
@@ -46,7 +46,7 @@ function AuthProvider({ children }) {
     return () => clearTimeout(timer);
   }, [message]);
 
-  /* ---------- SIGNUP ---------- */
+  //  SIGNUP
   async function signup(name, email, password) {
     try {
       const userCred = await createUserWithEmailAndPassword(
@@ -70,7 +70,7 @@ function AuthProvider({ children }) {
     }
   }
 
-  /* ---------- LOGIN ---------- */
+  // LOGIN
   async function login(email, password) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -89,12 +89,12 @@ function AuthProvider({ children }) {
     }
   }
 
-  /* ---------- LOGOUT ---------- */
+  //  LOGOUT
   function logout() {
     signOut(auth);
   }
 
-  /* ---------- CONTEXT VALUE ---------- */
+  //  CONTEXT VALUE
   return (
     <AuthContext.Provider
       value={{
